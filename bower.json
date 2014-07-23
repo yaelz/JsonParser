@@ -1,0 +1,19 @@
+{
+  "name": "test-example",
+  "version": "0.0.0",
+  "authors": [
+    "yaelz"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jasmine": "~1.3.1"
+  }
+}
