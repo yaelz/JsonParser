@@ -21,10 +21,6 @@ describe("JsonParserTest", function() {
     });*/
 
     describe("When Generating a Json object with one primitive Json object", function() {
-        /*it("invoking an empty constructor should result in an error", function() {
-            var func = function () {new JsonObject();};
-            expect(func).toThrow(new Error('JsonObject constructor should accept an object'));
-        });*/
         it("should parse empty object", function() {
             var tree = parser.parse("{}");
             expect(tree).toBeDefined();
@@ -67,24 +63,25 @@ describe("JsonParserTest", function() {
         });
 
         it("should parse object with array", function() {
-            var tree = parser.parse('{"b":[1,2,false]}');
-            expect(tree).toEqual({b : [1, 2, false]});
+            var tree = parser.parse('{"b":[1,"str",false]}');
+            expect(tree).toEqual({b : [1, "str", false]});
         });
 
-//        it("should parse object with array as value", function() {
-//            var tree = parser.parse('{"b":"Try out"}');
-//            expect(tree).toEqual({b : 'Try out'});
-//        });
+    });
 
-//        it("should parse object with redundant spaces", function() {
-//            var tree = parser.parse('{  "b"  :  3  }');
-//            expect(tree).toEqual({b : 3});
-//        });
+    describe("Edge Cases", function() {
+        it("should parse object with redundant spaces", function() {
+            var tree = parser.parse('{  "b"  :  3  }');
+            expect(tree).toEqual({b : 3});
+        });
+    });
 
+//    describe("When parsing more than one key-value pair", function() {
 //        it("should parse object with double tuple-s", function() {
 //            var tree = parser.parse('{"b":3, "a":4}');
 //            expect(tree).toEqual({b : 3, a : 4});
 //        });
+//    });
 
-    });
+
 });
