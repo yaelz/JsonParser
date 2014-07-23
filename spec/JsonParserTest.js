@@ -2,6 +2,11 @@ describe("JsonParserTest", function() {
     var parser;
 
 
+    function expectParseResult(inputStr, expectedJsonObject) {
+        var tree = parser.parse(inputStr);
+        expect(tree).toEqual(expectedJsonObject);
+    }
+
     beforeEach(function() {
         parser = new JsonParser();
     });
@@ -22,24 +27,19 @@ describe("JsonParserTest", function() {
 
     describe("When Generating a Json object with one primitive Json object", function() {
         it("should parse empty object", function() {
-            var tree = parser.parse("{}");
-            expect(tree).toBeDefined();
-            expect(tree).toEqual({});
+            expectParseResult("{}", {});
         });
 
         it("should parse object with number as key", function() {
-            var tree = parser.parse('{"a":3}');
-            expect(tree).toEqual({a : 3});
+            expectParseResult('{"a":3}', {a : 3});
         });
 
         it("should parse object with number as value, different value", function() {
-            var tree = parser.parse('{"a":4}');
-            expect(tree).toEqual({a : 4});
+            expectParseResult('{"a":4}', {a : 4});
         });
 
         it("should parse object with number as value, different key", function() {
-            var tree = parser.parse('{"b" : 3}');
-            expect(tree).toEqual({b : 3});
+            expectParseResult('{"b" : 3}',{b: 3});
         });
 
         it("should parse object with single boolean which is false as value", function() {
@@ -48,8 +48,8 @@ describe("JsonParserTest", function() {
         });
 
         it("should parse object with single boolean which is true as value", function() {
-            var tree = parser.parse('{"b":false}');
-            expect(tree).toEqual({b : false});
+            var tree = parser.parse('{"b":true}');
+            expect(tree).toEqual({b : true});
         });
 
         it("should parse object with single empty array", function() {
@@ -66,6 +66,20 @@ describe("JsonParserTest", function() {
             var tree = parser.parse('{"b":[1,"str",false]}');
             expect(tree).toEqual({b : [1, "str", false]});
         });
+
+        it("should parse object with array", function() {
+            var tree = parser.parse('{"b":[1,"str",false]}');
+            expect(tree).toEqual({b : [1, "str", false]});
+        });
+
+        it("learning String.split", function() {
+
+            expect("[]".split(",")).toEqual(["[]"]);
+            expect("".split(",")).toEqual([""]);
+            expect("[,]".split(",")).toEqual(["[","]"]);
+        });
+
+
 
     });
 

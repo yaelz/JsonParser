@@ -32,18 +32,53 @@ function isBoolean(input)
     return firstIsQuotation && lastIsQuotation && input.substr(1, input.length-1);
 };
 
-function parseValue(valString) {
-    var value;
-    if (!isNaN(valString)) {
-        value = Number(valString);
-    } else if (valString === "true" || valString === "false") {
-        value = (value == "false") != Boolean(value);
-    } else {
-        value = valString.substr(1, valString.length - 2);
-    }
-    // TODO default?
-    return value;
+function isArray(valString) {
+    return valString.charAt(0) == '[';
 }
+
+function parseArray(valString) {
+    if (valString == "[]") {
+        return [];
+    }
+
+    var len = valString.length;
+    var valString = valString.substring(1, len - 1);
+    var valuesArr = valString.split(",");
+    var retArr = [];
+    valuesArr.forEach(function (item) {
+        item = parseValue(item);
+        retArr.push(item);} );
+    return retArr;
+}
+
+function isNumber(valString) {
+    return !isNaN(valString);
+}
+function isBooleanValue(valString) {
+    return (valString === "true") || (valString === "false");
+}
+function parseBoolean(valString) {
+    return (valString == "false") != Boolean(valString);
+}
+function parseString(valString) {
+    return valString.substr(1, valString.length - 2);
+}
+function parseValue(valString) {
+
+    if (isArray(valString)) {
+        return parseArray(valString)
+    }
+
+    if (isNumber(valString)) {
+        return Number(valString);
+    }
+
+    if (isBooleanValue(valString)) {
+        return parseBoolean(valString);
+    }
+    return parseString(valString);
+}
+
 function parseKeyValue (str) {
     var len = str.length;
     var property = str.substring(1, len - 1);
@@ -53,20 +88,7 @@ function parseKeyValue (str) {
     key = key.substring(1, key.length - 1);
 
     var value = splits[1].trim();
-    if (value == '[]') {
-        value = [];
-    } else if (value.charAt(0) == '[') {
-        len = value.length;
-        value = value.substring(1, len - 1);
-        var valuesArr = value.split(",");
-        var retArr = [];
-        valuesArr.forEach(function (item) {
-            item = parseValue(item);
-            retArr.push(item);} );
-        value = retArr;
-    } else {
         var value = parseValue(value);
-    }
     var propertyArr = [];
     propertyArr.push(key);
     propertyArr.push(value);
