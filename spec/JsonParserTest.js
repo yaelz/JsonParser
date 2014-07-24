@@ -39,30 +39,34 @@ describe("JsonParserTest", function() {
         it("should parse object with string as value", function() {
             expectParseResult('{"a":"str"}', {a : "str"});
         });
+        describe("When Generating a Json object with arrays", function() {
+            it("should parse object with single empty array", function() {
+                expectParseResult('{"b":[]}', {b : []});
+            });
 
-        it("should parse object with single empty array", function() {
-            expectParseResult('{"b":[]}', {b : []});
-        });
+            it("should parse object with single element in array", function() {
+                expectParseResult('{"b":[1]}', {b : [1]});
+            });
 
-        it("should parse object with single element in array", function() {
-            expectParseResult('{"b":[1]}', {b : [1]});
-        });
+            it("should parse object with array", function() {
+                expectParseResult('{"b":[1,"str",false]}', {b : [1, "str", false]});
+            });
 
-        it("should parse object with array", function() {
-            expectParseResult('{"b":[1,"str",false]}', {b : [1, "str", false]});
-        });
-//// TODO complex arrays
-        it("should parse object with complex array with inner array empty", function() {
-            expectParseResult('{"b":[1,"str",[]]}', {b : [1, "str", []]});
-        });
-        it("should parse object with complex array with one value in the inner array", function() {
-            expectParseResult('{"b":[1,"str",[1]]}', {b : [1, "str", [1]]});
-        });
-        it("should parse object with complex array with one value in the inner array", function() {
-            expectParseResult('{"b":[1,[2],[1]]}', {b : [1, [2], [1]]});
-        });
-        it("should parse object with complex array with more than one value in the inner array", function() {
-            expectParseResult('{"b":[1,"str",[1, 2]]}', {b : [1, "str", [1, 2]]});
+            it("should parse object with complex array with inner array empty", function() {
+                expectParseResult('{"b":[1,"str",[]]}', {b : [1, "str", []]});
+            });
+
+            it("should parse object with complex array with one value in the inner array", function() {
+                expectParseResult('{"b":[1,"str",[1]]}', {b : [1, "str", [1]]});
+            });
+
+            it("should parse object with complex array with one value in the inner array", function() {
+                expectParseResult('{"b":[1,[2],[1]]}', {b : [1, [2], [1]]});
+            });
+
+            it("should parse object with complex array with more than one value in the inner array", function() {
+                expectParseResult('{"b":[1,"str",[1, 2]]}', {b : [1, "str", [1, 2]]});
+            });
         });
 
 //        it("learning String.split", function() {
@@ -80,24 +84,7 @@ describe("JsonParserTest", function() {
 //        });
 //    });
 
-//    describe("Array parser", function() {
-//        it("should parse simple array", function() {
-//            expect([1,2,3]).toEqual(parseArray('[1,2,3]'));
-//        });
-//
-//        it("should parse array with inner array which is empty", function() {
-//            expect([1,[],3]).toEqual(parseArray('[1,[],3]'));
-//        });
-//
-//        it("should parse array with inner array with a value", function() {
-//            expect([1,[false],3]).toEqual(parseArray('[1,[false],3]'));
-//        });
-//
-//        it("should parse array with inner array with a value", function() {
-//            expect([1,[2,false],3]).toEqual(parseArray('[1,[2,false],3]'));
-//        });
-//
-//    });
+
 
 // TODO
 //    describe("Edge Cases", function() {
