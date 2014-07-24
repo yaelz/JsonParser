@@ -1,9 +1,9 @@
 var grunt = require("grunt");
 
-function standaloneTmpDir(path) {  return "dist/tmp/" + path; }
+function standaloneTmpDir(path) {  return "dist/tmp.js/" + path; }
 
 grunt.registerTask("build:compileSpecRunner",
-    "Processes the spec runner template and writes to a tmp file",
+    "Processes the spec runner template and writes to a tmp.js file",
     function() {
         var runnerHtml = grunt.template.process(
             grunt.file.read("grunt/templates/SpecRunner.html.jst"),
@@ -14,7 +14,7 @@ grunt.registerTask("build:compileSpecRunner",
 );
 
 grunt.registerTask("build:cleanSpecRunner",
-    "Deletes the tmp spec runner file",
+    "Deletes the tmp.js spec runner file",
     function() {
         grunt.file.delete(standaloneTmpDir(""));
     }

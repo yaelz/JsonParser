@@ -2,7 +2,10 @@
 
 function JsonParser() {
 
-};
+}
+
+//(function(){
+
 
 JsonParser.prototype.parse = function (str) {
     if (str === '{}') {
@@ -11,55 +14,39 @@ JsonParser.prototype.parse = function (str) {
         var len = str.length;
         var property = str.substring(1, len - 1);
         var newObj = {};
-        var rest = property;
-        while (rest !== '') {
-            var propertyAndRestArr = parseKeyValueAndRest(property);
-            var keyVal = propertyAndRestArr[0];
-            newObj[keyVal[0]] = keyVal[1];
-            rest = propertyAndRestArr[1];
-        }
+        property= parseKeyValue(property);
+        var keyVal = property;
+        newObj[keyVal[0]] = keyVal[1];
         return newObj;
     }
 };
 
 function isArray(valString) {
-    return valString.charAt(0) == '[';
-}
-
-function parseArray(valString) {
-    if (valString == "[]") {
-        return [];
+    if (valString.charAt(0) !== '[') {
+        return false;
     }
-
     var len = valString.length;
-    valString = valString.substring(1, len - 1);
-    var valuesArr = valString.split(",");
-    var retArr = [];
-    var isInnerArray = false;
-    var innerArrayStr = '';
-    valuesArr.forEach(function (item) {
-            /*if (innerArrayStr) {
-                innerArrayStr += item;
-                if (item.charAt(item.length-1)) {
-                    parseArray(innerArrayStr);
-                    isInnerArray = false;
-                }
-            }
-            else if (isArray(item)) {
-                isInnerArray = true;
-                innerArrayStr += item;
-            } else */{
-                // TODO refactor! Could there be rest ???
-                var itemAndRest = parseValueAndRest(item);
-                item = itemAndRest[0];
-                retArr.push(item);
-            }
-        } );
-    return retArr;
+    var str = valString;
+    var numOfUnbalanced = 1;
+    var index = 1;
+    while (index < len) {
+        if (str.charAt(index) === '[') {
+            numOfUnbalanced++;
+        } else if (str.charAt(index) === ']') {
+            numOfUnbalanced--;
+        }
+        index++;
+    }
+    return numOfUnbalanced === 0;
 }
 
 function isNumber(valString) {
-    return !isNaN(valString);
+    return !isNaN(valString) && valString != '';
+}
+
+function isString(valString) {
+    var len = valString.length;
+    return valString.charAt(0) === '"' && valString.charAt(len-1) === '"';
 }
 
 function isBoolean(valString) {
@@ -71,68 +58,69 @@ function parseBoolean(valString) {
 }
 
 function parseString(valString) {
-    return valString.substr(1, valString.length - 2);
+    return valString.substring(1, valString.length - 1);
 }
 
-function splitValAndRest(valString) {
-    var firstCommaChar = valString.indexOf(',');
-    var valStr;
-    var rest = '';
-    if (firstCommaChar !== -1) {
-        valStr = valString.substr(0, firstCommaChar);
-        rest = valString.substr(firstCommaChar + 1, valString.length);
-    } else {
-        valStr = valString;
+function isValidValue (valString) {
+    var array = isArray(valString);
+    var number = isNumber(valString);
+    var string = isString(valString);
+    var boolean = isBoolean(valString);
+    return array || number || string || boolean;
+}
+
+function parseArray(valString) {
+    if (valString == "[]") {
+        return [];
     }
-    return [valStr, rest];
-}
-
-function splitValAndRestArray (valString) {
-    var numOfUnBalanced = 1;
-    var str = valString;
+    var len = valString.length;
+    var str = valString.substring(1,len-1);
+    var retArr = [];
     var index = 1;
-    while (numOfUnBalanced) {
-        if (str.charAt(index) === '[') {
-            numOfUnBalanced++;
-        } else if (str.charAt(index) === ']') {
-            numOfUnBalanced--;
+    var commaSeparated = str.split(',');
+    var index = 0;
+    var commaSeparatedLength = commaSeparated.length;
+    var currStrVal='';
+    while (index < commaSeparatedLength) {
+        currStrVal += commaSeparated[index];
+        if (isValidValue(currStrVal)) {
+            retArr.push(parseValue(currStrVal));
+            currStrVal = '';
         }
         index++;
     }
-    return [str.substring(0, index), str.substring(index)];
+
+    return retArr;
 }
 
-function parseValueAndRest(valString) {
+function parseValue(valString) {
     if (isArray(valString)) {
-        var valAndRest = splitValAndRestArray(valString);
-        return [parseArray(valAndRest[0]), valAndRest[1]];
+        return parseArray(valString);
     }
     if (isNumber(valString)) {
-        var valAndRest = splitValAndRest(valString);
-        return [Number(valAndRest[0]), valAndRest[1]];
+        return Number(valString);
     }
     if (isBoolean(valString)) {
-        var valAndRest = splitValAndRest(valString);
-        return [parseBoolean(valAndRest[0]), valAndRest[1]];
+        return parseBoolean(valString);
     }
-    var valAndRest = splitValAndRest(valString);
-    return [parseString(valAndRest[0]), valAndRest[1]];
+    if (isString(valString)) {
+        return parseString(valString);
+    }
+    return Error('Invalid value to parse: '+valString);
 }
 
-function parseKeyValueAndRest (str) {
+function parseKeyValue (str) {
+    //console.log(str);
     var splits = str.split(':');
-    var key = splits[0];
-    key = key.trim();
+    var key = splits[0].trim();
     key = key.substring(1, key.length - 1);
 
-    var value = splits[1].trim();
-//    value = parseValueAndRest(value);
-    var valueAndRest = parseValueAndRest(value);
-    var value = valueAndRest[0];
-    var rest = valueAndRest[1];
+    var valStr = splits[1].trim();
+    var value = parseValue(valStr);
     var propertyArr = [];
     propertyArr.push(key);
     propertyArr.push(value);
-    return [propertyArr, ''];
-};
+    return propertyArr;
+}
 
+//})();

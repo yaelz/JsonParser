@@ -47,7 +47,7 @@ module.exports = {
         src: [ "SpecRunner.html" ],
         dest: root(""),
         expand: true,
-        cwd: dist("tmp")
+        cwd: dist("tmp.js")
       },
       {
         src: [ "*.js" ],
